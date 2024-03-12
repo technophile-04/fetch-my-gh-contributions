@@ -69,7 +69,7 @@ se-2-challenges:
 -----------------------------------------
 ```
 
-<details>
+</details>
 
 ## Pre-requisites :
 
