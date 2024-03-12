@@ -1,11 +1,11 @@
 const username = "technophile-04";
+const start = "2024-02-01";
+const end = "2024-02-29";
+
 const token = process.env.GITHUB_TOKEN;
 const headers = {
   Authorization: `token ${token}`,
 };
-
-const start = "2024-02-01";
-const end = "2024-02-29";
 
 interface PR {
   title: string;

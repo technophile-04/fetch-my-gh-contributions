@@ -100,9 +100,10 @@ GIT_TOKEN=your-github-token
 
 Checkout this guide on getting github token: [link](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
-Update time range in `src/index.ts` file
+Update time range & username in `src/index.ts` file
 
 ```typescript
+const username = "technophile-04";
 const start = "2024-02-01";
 const end = "2024-02-29";
 ```
