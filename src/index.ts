@@ -4,6 +4,9 @@ const headers = {
   Authorization: `token ${token}`,
 };
 
+const start = "2024-02-01";
+const end = "2024-02-29";
+
 interface PR {
   title: string;
   number: number;
@@ -56,4 +59,4 @@ async function fetchMergedPRs(startDate: string, endDate: string) {
   }
 }
 
-fetchMergedPRs("2024-02-01", "2024-02-29");
+fetchMergedPRs(start, end);
