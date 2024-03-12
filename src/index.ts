@@ -40,10 +40,14 @@ async function fetchMergedPRs(startDate: string, endDate: string) {
 
     for (const repo in prsByRepo) {
       console.log(`-----------------------------------------`);
-      console.log(`Repository: ${repo}:\n`);
+      console.log(`${repo.split("/")[1]}:\n`);
       prsByRepo[repo].forEach((pr) => {
         console.log(`---- ${pr.title}: ${pr.html_url}`);
       });
+
+      console.log(
+        `---- Reviews: https://github.com/${repo}/pulls?q=is%3Apr+is%3Aclosed+reviewed-by%3A${username}+merged%3A${startDate}..${endDate}+`,
+      );
       console.log(`-----------------------------------------\n`);
       console.log("\n");
     }
