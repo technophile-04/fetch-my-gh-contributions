@@ -121,3 +121,30 @@ TIP: Your can redirect the output to a file by using `>` operator
 ```bash
 pnpm run dev >> output.txt
 ```
+
+## Flags:
+
+--compact: Show only PR numbers
+
+Example output:
+
+```bash
+pnpm run dev --compact
+
+scaffold-eth-2: #746, #741, #740, #739, #738, #731, #728, #721, #719, #712, #707
+Reviews: https://github.com/scaffold-eth/scaffold-eth-2/pulls?q=is%3Apr+is%3Aclosed+reviewed-by%3Atechnophile-04+merged%3A2024-02-01..2024-02-29+
+----
+```
+
+--no-review-link: Hide review link
+
+Example output:
+
+```bash
+pnpm run dev --compact --no-review-link
+
+scaffold-eth-2: #746, #741, #740, #739, #738, #731, #728, #721, #719, #712, #707
+----
+```
+
+TIP: Both flags can be used independently or together
