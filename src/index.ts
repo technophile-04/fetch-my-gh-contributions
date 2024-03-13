@@ -19,6 +19,11 @@ interface RepoPRs {
 
 async function fetchMergedPRs(startDate: string, endDate: string) {
   try {
+    const args = process.argv.slice(2);
+    const flags = args.filter((arg) => arg.startsWith("--"));
+    const isCompact = flags.includes("--compact");
+    const isWithoutReviewLink = flags.includes("--no-review-link");
+
     const response = await fetch(
       `https://api.github.com/search/issues?q=+type:pr+author:${username}+is:merged+created:${startDate}..${endDate}`,
       { headers },
@@ -42,17 +47,28 @@ async function fetchMergedPRs(startDate: string, endDate: string) {
     });
 
     for (const repo in prsByRepo) {
-      console.log(`-----------------------------------------`);
-      console.log(`${repo.split("/")[1]}:\n`);
-      prsByRepo[repo].forEach((pr) => {
-        console.log(`---- ${pr.title}: ${pr.html_url}`);
-      });
+      if (isCompact) {
+        const prNumbers = prsByRepo[repo].map((pr) => `#${pr.number}`);
+        console.log(`${repo.split("/")[1]}: ${prNumbers.join(", ")}`);
+        !isWithoutReviewLink &&
+          console.log(
+            `Reviews: https://github.com/${repo}/pulls?q=is%3Apr+is%3Aclosed+reviewed-by%3A${username}+merged%3A${startDate}..${endDate}+`,
+          );
+        console.log("----\n");
+      } else {
+        console.log(`-----------------------------------------`);
+        console.log(`${repo.split("/")[1]}:\n`);
+        prsByRepo[repo].forEach((pr) => {
+          console.log(`---- ${pr.title}: ${pr.html_url}`);
+        });
 
-      console.log(
-        `---- Reviews: https://github.com/${repo}/pulls?q=is%3Apr+is%3Aclosed+reviewed-by%3A${username}+merged%3A${startDate}..${endDate}+`,
-      );
-      console.log(`-----------------------------------------\n`);
-      console.log("\n");
+        !isWithoutReviewLink &&
+          console.log(
+            `---- Reviews: https://github.com/${repo}/pulls?q=is%3Apr+is%3Aclosed+reviewed-by%3A${username}+merged%3A${startDate}..${endDate}+`,
+          );
+        console.log(`-----------------------------------------\n`);
+        console.log("\n");
+      }
     }
   } catch (error) {
     console.error("Error fetching PRs:", error);
