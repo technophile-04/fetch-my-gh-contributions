@@ -1,6 +1,6 @@
 const username = "technophile-04";
-const start = "2024-02-01";
-const end = "2024-02-29";
+const start = "2024-05-01";
+const end = "2024-05-31";
 
 const token = process.env.GITHUB_TOKEN;
 const headers = {
@@ -31,7 +31,7 @@ async function fetchMergedPRs(startDate: string, endDate: string) {
     const data = await response.json();
     const prsByRepo: RepoPRs = {};
 
-    data.items.forEach((pr: any) => {
+    data?.items?.forEach((pr: any) => {
       const repoName = pr.repository_url.replace(
         "https://api.github.com/repos/",
         "",
@@ -57,9 +57,9 @@ async function fetchMergedPRs(startDate: string, endDate: string) {
         console.log("----\n");
       } else {
         console.log(`-----------------------------------------`);
-        console.log(`${repo.split("/")[1]}:\n`);
+        console.log(`${repo.split("/")[1]}: ${repo}\n`);
         prsByRepo[repo].forEach((pr) => {
-          console.log(`---- ${pr.title}: ${pr.html_url}`);
+          console.log(`---- ${pr.title}: #${pr.number}`);
         });
 
         !isWithoutReviewLink &&
