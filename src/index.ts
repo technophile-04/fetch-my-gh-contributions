@@ -1,6 +1,6 @@
 const username = "technophile-04";
-const start = "2024-05-01";
-const end = "2024-05-31";
+const start = "2024-06-01";
+const end = "2024-06-30";
 
 const token = process.env.GITHUB_TOKEN;
 const headers = {
