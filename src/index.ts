@@ -1,6 +1,6 @@
 const username = "technophile-04";
 const start = "2025-03-16";
-const end = "2025-04-05";
+const end = "2025-10-05";
 
 const token = process.env.GITHUB_TOKEN;
 const headers = {
@@ -105,10 +105,21 @@ async function fetchMergedPRs(startDate: string, endDate: string) {
       });
     });
 
-    for (const repo in prsByRepo) {
+    // Get all repos combined (PRs and reviews)
+    const allRepos = new Set([
+      ...Object.keys(prsByRepo),
+      ...Object.keys(reviewsByRepo),
+      ...Object.keys(ongoingPRsByRepo),
+    ]);
+
+    for (const repo of allRepos) {
       if (isCompact) {
-        const prNumbers = prsByRepo[repo].map((pr) => `#${pr.number}`);
-        console.log(`${repo.split("/")[1]}: ${prNumbers.join(", ")}`);
+        console.log(`${repo.split("/")[1]}:`);
+
+        if (prsByRepo[repo]) {
+          const prNumbers = prsByRepo[repo].map((pr) => `#${pr.number}`);
+          console.log(`Merged PRs: ${prNumbers.join(", ")}`);
+        }
 
         if (ongoingPRsByRepo[repo]) {
           const ongoingNumbers = ongoingPRsByRepo[repo].map(
@@ -118,30 +129,30 @@ async function fetchMergedPRs(startDate: string, endDate: string) {
         }
 
         if (reviewsByRepo[repo]) {
-          const reviewNumbers = reviewsByRepo[repo].map(
-            (review) => `#${review.number}`
-          );
-          console.log(`Reviews: ${reviewNumbers.join(", ")}`);
+          console.log("Reviews:");
+          reviewsByRepo[repo].forEach((review) => {
+            console.log(
+              `---- #${review.number} (${review.state}): ${review.title} - ${review.html_url}`
+            );
+          });
         }
 
-        !isWithoutReviewLink &&
-          console.log(
-            `Review Link: https://github.com/${repo}/pulls?q=is%3Apr+is%3Aclosed+reviewed-by%3A${username}+merged%3A${startDate}..${endDate}+`
-          );
         console.log("----\n");
       } else {
         console.log(`-----------------------------------------`);
         console.log(`${repo.split("/")[1]}: ${repo}\n`);
 
-        console.log("Merged PRs:");
-        prsByRepo[repo].forEach((pr) => {
-          console.log(`---- ${pr.title}: #${pr.number}`);
-        });
+        if (prsByRepo[repo]) {
+          console.log("Merged PRs:");
+          prsByRepo[repo].forEach((pr) => {
+            console.log(`---- ${pr.title}: #${pr.number} - ${pr.html_url}`);
+          });
+        }
 
         if (ongoingPRsByRepo[repo]) {
           console.log("\nOngoing PRs:");
           ongoingPRsByRepo[repo].forEach((pr) => {
-            console.log(`---- ${pr.title}: #${pr.number}`);
+            console.log(`---- ${pr.title}: #${pr.number} - ${pr.html_url}`);
           });
         }
 
@@ -149,17 +160,12 @@ async function fetchMergedPRs(startDate: string, endDate: string) {
           console.log("\nReviews:");
           reviewsByRepo[repo].forEach((review) => {
             console.log(
-              `---- ${review.title}: #${review.number} (${review.state})`
+              `---- ${review.title}: #${review.number} (${review.state}) - ${review.html_url}`
             );
           });
         }
 
-        !isWithoutReviewLink &&
-          console.log(
-            `\nReview Link: https://github.com/${repo}/pulls?q=is%3Apr+is%3Aclosed+reviewed-by%3A${username}+merged%3A${startDate}..${endDate}+`
-          );
         console.log(`-----------------------------------------\n`);
-        console.log("\n");
       }
     }
   } catch (error) {
